@@ -9,9 +9,9 @@ namespace Core.Interfaces
 {
     public interface IDirectoryScanner
     {
-        FileTree StartScan(string path, ushort maxThreadCount);
+        FileTree Scan(string path, ushort maxThreadCount);
 
-        void StopScan();
+        void Stop();
 
         public bool IsScanning { get; }
     }

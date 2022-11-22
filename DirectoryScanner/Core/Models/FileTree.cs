@@ -12,21 +12,21 @@ namespace Core.Models
         public FileTree(Node root)
         {
             Root = root;
-            Root.Length = GetLength(root);
+            Root.Size = GetDirectorySize(root);
         }
 
-        private long GetLength(Node node)
+        private long GetDirectorySize(Node node)
         {
             if (node.Children == null)
             {
-                return node.Length;
+                return node.Size;
             }
 
             foreach (var child in node.Children)
             {
-                node.Length += GetLength(child);
+                node.Size += GetDirectorySize(child);
             }
-            return node.Length;
+            return node.Size;
         }
     }
 }

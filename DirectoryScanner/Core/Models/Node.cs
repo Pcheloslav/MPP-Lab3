@@ -10,7 +10,7 @@ namespace Core.Models
     {
         public string FullName { get; }
         public string Name { get; }
-        public long Length { get; set; }
+        public long Size { get; set; }
         public bool IsDirectory { get; }
         public List<Node>? Children { get; set; }
 
@@ -21,9 +21,9 @@ namespace Core.Models
             IsDirectory = isDirectory;
         }
 
-        public Node(string fullName, string name, long length) : this(fullName, name)
+        public Node(string fullName, string name, long size) : this(fullName, name)
         {
-            Length = length;
+            Size = size;
         }
 
         public Node(string fullName, string name, List<Node>? children) : this(fullName, name, true)
