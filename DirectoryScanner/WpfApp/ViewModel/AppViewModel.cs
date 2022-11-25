@@ -25,7 +25,7 @@ namespace WpfApp.ViewModel
                 using var folderBrowserDialog = new FolderBrowserDialog();
                 if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
                 {
-                    DirectoryPath = folderBrowserDialog.SelectedPath;
+                    DirPath = folderBrowserDialog.SelectedPath;
                     Tree = null;
                 }
             });
@@ -35,12 +35,12 @@ namespace WpfApp.ViewModel
                 Task.Run(() =>
                 {
                     IsScanning = true;
-                    Core.Models.FileTree result = _scanner.Scan(DirectoryPath, MaxThreadCount);
+                    Core.Models.FileTree result = _scanner.Scan(DirPath, MaxThreadCount);
                     IsScanning = false;
                     Tree = new FileTree(result);
                 });
 
-            }, _ => _directoryPath != null && !IsScanning);
+            }, _ => _DirPath != null && !IsScanning);
 
             StopCommand = new RelayCommand(_ =>
             {
@@ -49,14 +49,14 @@ namespace WpfApp.ViewModel
             }, _ => IsScanning);
         }
 
-        private string? _directoryPath;
-        public string? DirectoryPath
+        private string? _DirPath;
+        public string? DirPath
         {
-            get { return _directoryPath; }
+            get { return _DirPath; }
             set
             {
-                _directoryPath = value;
-                OnPropertyChanged("DirectoryPath");
+                _DirPath = value;
+                OnPropertyChanged("DirPath");
             }
         }
 

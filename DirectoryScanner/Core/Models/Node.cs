@@ -11,14 +11,14 @@ namespace Core.Models
         public string FullName { get; }
         public string Name { get; }
         public long Size { get; set; }
-        public bool IsDirectory { get; }
         public List<Node>? Children { get; set; }
+        public bool IsDir { get; }
 
-        public Node(string fullName, string name, bool isDirectory = false)
+        public Node(string fullName, string name, bool isDir = false)
         {
             FullName = fullName;
             Name = name;
-            IsDirectory = isDirectory;
+            IsDir = isDir;
         }
 
         public Node(string fullName, string name, long size) : this(fullName, name)

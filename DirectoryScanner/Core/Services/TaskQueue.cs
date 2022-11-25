@@ -13,7 +13,7 @@ namespace Core.Services
         public class TaskQueue
         {
             private readonly CancellationToken _token;
-            private readonly SemaphoreSlim _semaphore;
+            private readonly SemaphoreSlim _sem;
             private readonly Task _startNextTask;
             private readonly Task _waitForNextTask;
             private ConcurrentQueue<Task> _waitQueue;
@@ -21,7 +21,7 @@ namespace Core.Services
             public TaskQueue(CancellationTokenSource tokenSource, ushort maxThreadCount)
             {
                 _waitQueue = new ConcurrentQueue<Task>();
-                _semaphore = new SemaphoreSlim(maxThreadCount);
+                _sem = new SemaphoreSlim(maxThreadCount);
                 _token = tokenSource.Token;
                 _startNextTask = new Task(() => StartNext(), _token);
                 _waitForNextTask = new Task(() => WaitForNextTask(), _token);
@@ -57,7 +57,7 @@ namespace Core.Services
                     {
                         try
                         {
-                            _semaphore.Wait(_token);
+                            _sem.Wait(_token);
                             task.Start();
                         }
                         catch (OperationCanceledException)
@@ -86,7 +86,7 @@ namespace Core.Services
                         }
                         finally
                         {
-                            _semaphore.Release();
+                            _sem.Release();
                             _waitQueue.TryDequeue(out _);
                         }
                     }

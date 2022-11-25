@@ -8,9 +8,9 @@ namespace WpfApp.Models
 
         public FileTree(Core.Models.FileTree tree)
         {
-            var rootNode = tree.Root;
-            Root = new Node(rootNode.Name, rootNode.Size, 0, rootNode.IsDirectory);
-            if (tree.Root.Children != null)
+            var rootNode = tree.RootNode;
+            Root = new Node(rootNode.Name, rootNode.Size, 0, rootNode.IsDir);
+            if (tree.RootNode.Children != null)
             {
                 SetChilds(rootNode, Root);
             }
@@ -25,7 +25,7 @@ namespace WpfApp.Models
                 {
                     double sizeInPercent = node.Size == 0 ? 0 : (double)child.Size / (double)node.Size * 100;
 
-                    Node newNode = new Node(child.Name, child.Size, sizeInPercent, child.IsDirectory);
+                    Node newNode = new Node(child.Name, child.Size, sizeInPercent, child.IsDir);
                     if (child.Children != null)
                     {
                         SetChilds(child, newNode);

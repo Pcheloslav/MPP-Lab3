@@ -8,11 +8,11 @@ namespace Core.Models
 {
     public class FileTree
     {
-        public Node Root { get; }
+        public Node RootNode { get; }
         public FileTree(Node root)
         {
-            Root = root;
-            Root.Size = GetDirSize(root);
+            RootNode = root;
+            RootNode.Size = GetDirSize(root);
         }
 
         private long GetDirSize(Node node)
