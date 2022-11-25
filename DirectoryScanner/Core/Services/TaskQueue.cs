@@ -12,19 +12,19 @@ namespace Core.Services
     {
         public class TaskQueue
         {
-            private ConcurrentQueue<Task> _waitQueue;
-            private readonly SemaphoreSlim _semaphore;
             private readonly CancellationToken _token;
-            private readonly Task _startNext;
-            private readonly Task _waitNext;
+            private readonly SemaphoreSlim _semaphore;
+            private readonly Task _startNextTask;
+            private readonly Task _waitForNextTask;
+            private ConcurrentQueue<Task> _waitQueue;
 
-            public TaskQueue(ushort maxThreadCount, CancellationTokenSource tokenSource)
+            public TaskQueue(CancellationTokenSource tokenSource, ushort maxThreadCount)
             {
                 _waitQueue = new ConcurrentQueue<Task>();
                 _semaphore = new SemaphoreSlim(maxThreadCount);
                 _token = tokenSource.Token;
-                _startNext = new Task(() => StartNext(), _token);
-                _waitNext = new Task(() => WaitNext(), _token);
+                _startNextTask = new Task(() => StartNext(), _token);
+                _waitForNextTask = new Task(() => WaitForNextTask(), _token);
             }
 
             public void Enqueue(Task task)
@@ -34,12 +34,12 @@ namespace Core.Services
 
             public void StartAndWaitAll()
             {
-                _startNext.Start();
-                _waitNext.Start();
+                _startNextTask.Start();
+                _waitForNextTask.Start();
                 try
                 {
-                    _startNext.Wait(_token);
-                    _waitNext.Wait(_token);
+                    _startNextTask.Wait(_token);
+                    _waitForNextTask.Wait(_token);
                 }
                 catch (OperationCanceledException)
                 {
@@ -50,7 +50,7 @@ namespace Core.Services
             private void StartNext()
             {
                 Task? task;
-                while (!_waitNext.IsCompleted && !_token.IsCancellationRequested)
+                while (!_waitForNextTask.IsCompleted && !_token.IsCancellationRequested)
                 {
                     task = _waitQueue.Where(t => t.Status == TaskStatus.Created).FirstOrDefault();
                     if (task != null)
@@ -68,7 +68,7 @@ namespace Core.Services
                 }
             }
 
-            private void WaitNext()
+            private void WaitForNextTask()
             {
                 Task? task;
                 while (!_waitQueue.IsEmpty && !_token.IsCancellationRequested)

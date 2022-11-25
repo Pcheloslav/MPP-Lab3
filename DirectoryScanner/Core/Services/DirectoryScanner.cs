@@ -35,7 +35,7 @@ namespace Core.Services
 
             IsScanning = true;
             _cancelTokenSource = new CancellationTokenSource();
-            _taskQueue = new TaskQueue(maxThreadCount, _cancelTokenSource);
+            _taskQueue = new TaskQueue(_cancelTokenSource, maxThreadCount);
             var token = _cancelTokenSource.Token;
             var directoryInfo = new DirectoryInfo(path);
             var root = new Node(directoryInfo.FullName, directoryInfo.Name, true);
@@ -108,11 +108,6 @@ namespace Core.Services
                     node.Children.Add(childNode);
                 }
             }
-        }
-
-        public FileTree StartScan(string path, ushort maxThreadCount)
-        {
-            throw new NotImplementedException();
         }
     }
 }

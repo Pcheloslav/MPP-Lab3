@@ -12,10 +12,10 @@ namespace Core.Models
         public FileTree(Node root)
         {
             Root = root;
-            Root.Size = GetDirectorySize(root);
+            Root.Size = GetDirSize(root);
         }
 
-        private long GetDirectorySize(Node node)
+        private long GetDirSize(Node node)
         {
             if (node.Children == null)
             {
@@ -24,7 +24,7 @@ namespace Core.Models
 
             foreach (var child in node.Children)
             {
-                node.Size += GetDirectorySize(child);
+                node.Size += GetDirSize(child);
             }
             return node.Size;
         }
