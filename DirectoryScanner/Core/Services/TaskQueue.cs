@@ -47,27 +47,6 @@ namespace Core.Services
                 }
             }
 
-            private void StartNext()
-            {
-                Task? task;
-                while (!_waitForNextTask.IsCompleted && !_token.IsCancellationRequested)
-                {
-                    task = _waitQueue.Where(t => t.Status == TaskStatus.Created).FirstOrDefault();
-                    if (task != null)
-                    {
-                        try
-                        {
-                            _sem.Wait(_token);
-                            task.Start();
-                        }
-                        catch (OperationCanceledException)
-                        {
-                            break;
-                        }
-                    }
-                }
-            }
-
             private void WaitForNextTask()
             {
                 Task? task;
@@ -88,6 +67,27 @@ namespace Core.Services
                         {
                             _sem.Release();
                             _waitQueue.TryDequeue(out _);
+                        }
+                    }
+                }
+            }
+
+            private void StartNext()
+            {
+                Task? task;
+                while (!_waitForNextTask.IsCompleted && !_token.IsCancellationRequested)
+                {
+                    task = _waitQueue.Where(t => t.Status == TaskStatus.Created).FirstOrDefault();
+                    if (task != null)
+                    {
+                        try
+                        {
+                            _sem.Wait(_token);
+                            task.Start();
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            break;
                         }
                     }
                 }

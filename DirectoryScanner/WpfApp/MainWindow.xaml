@@ -89,7 +89,7 @@
             <Button Foreground="White" Margin ="0,-35, 0,5" Command="{Binding ScanCommand}" Content="Сканировать" Width="246"/>
             <Button Foreground="White" Margin ="800,-35, 0,5" Command="{Binding StopCommand}" Content="Стоп" Width="257"/>
             <TextBlock FontFamily="Arial" FontSize="20" Foreground="White" Text="Выбранная диктория: "/>
-            <TextBlock Margin="30 0" FontFamily="Arial" FontSize="20" Foreground="White" TextWrapping="Wrap" Text="{Binding DirectoryPath}"/>
+            <TextBlock Margin="30 0" FontFamily="Arial" FontSize="20" Foreground="White" TextWrapping="Wrap" Text="{Binding DirPath}"/>
             <TextBlock Margin="30 0" FontFamily="Arial" FontSize="20" Foreground="White" Text="{Binding Tree.Root.Size, StringFormat=(\{0\} bytes)}"/>
         </StackPanel>
         <ScrollViewer Grid.ColumnSpan="3" Margin="0, 125, 0, 0" Grid.RowSpan="2">
@@ -97,7 +97,7 @@
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding Path=Children}">
                         <StackPanel Orientation="Horizontal" >
-                            <Image Source="{Binding Path=IcoPath}" MaxHeight="20"></Image>
+                            <Image Source="{Binding Path=IconPath}" MaxHeight="20"></Image>
                             <TextBlock FontFamily="Arial" FontSize="20" Foreground="White" Text="{Binding Name}"/>
                             <TextBlock FontFamily="Arial" FontSize="20" Foreground="White" Text=" ("/>
                             <TextBlock FontFamily="Arial" FontSize="20" Foreground="White" Text="{Binding Length}"/>

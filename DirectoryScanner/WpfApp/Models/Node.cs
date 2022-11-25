@@ -14,9 +14,9 @@ namespace WpfApp.Models
         {
             Name = name;
             Size = length;
-            SizeInPercent = sizeInPercent;
             IsDir = isDir;
             Children = children;
+            SizeInPercent = sizeInPercent;
             IconPath = IsDir ? "Resources/folder.png" : "Resources/file.png";
         }
     }
