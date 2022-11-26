@@ -26,9 +26,6 @@ namespace Core.Models
             Size = size;
         }
 
-        public Node(string fullName, string name, List<Node>? children) : this(fullName, name, true)
-        {
-            Children = children;
-        }
+        
     }
 }

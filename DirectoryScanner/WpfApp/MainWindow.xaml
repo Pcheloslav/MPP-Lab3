@@ -100,7 +100,7 @@
                             <Image Source="{Binding Path=IconPath}" MaxHeight="20"></Image>
                             <TextBlock FontFamily="Arial" FontSize="20" Foreground="White" Text="{Binding Name}"/>
                             <TextBlock FontFamily="Arial" FontSize="20" Foreground="White" Text=" ("/>
-                            <TextBlock FontFamily="Arial" FontSize="20" Foreground="White" Text="{Binding Length}"/>
+                            <TextBlock FontFamily="Arial" FontSize="20" Foreground="White" Text="{Binding Size}"/>
                             <TextBlock FontFamily="Arial" FontSize="20" Foreground="White" Text=" bytes, "/>
                             <TextBlock FontFamily="Arial" FontSize="20" Foreground="White" Text="{Binding SizeInPercent, StringFormat=N2}"/>
                             <TextBlock FontFamily="Arial" FontSize="20" Foreground="White" Text="%)"/>
