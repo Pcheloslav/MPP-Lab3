@@ -10,7 +10,7 @@ namespace Core.Services
 
     namespace Core.Services
     {
-        public class TaskQueue
+        public class TaskQueue : ITaskQueue
         {
             private readonly CancellationToken _token;
             private readonly SemaphoreSlim _sem;

@@ -9,7 +9,7 @@ namespace Core.Interfaces
 {
     public interface IDirectoryScanner
     {
-        FileTree Scan(string path, ushort maxThreadCount);
+        FileTree Scan(string path, ushort maxThreadCount, Action<string> onScanStart);
 
         void Stop();
 

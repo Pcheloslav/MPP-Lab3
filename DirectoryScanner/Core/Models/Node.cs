@@ -25,7 +25,5 @@ namespace Core.Models
         {
             Size = size;
         }
-
-        
     }
 }

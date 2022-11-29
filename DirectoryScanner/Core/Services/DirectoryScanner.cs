@@ -1,21 +1,21 @@
 ﻿using Core.Interfaces;
 using Core.Models;
 using Core.Services.Core.Services;
+using Microsoft.VisualBasic.FileIO;
 
 namespace Core.Services
 {
     public class DirectoryScanner : IDirectoryScanner
     {
-        private CancellationTokenSource _cancelTokenSource;
-        private TaskQueue? _taskQueue;
+        private CancellationTokenSource? _cancelTokenSource;
+        private ITaskQueue? _taskQueue;
         public bool IsScanning { get; private set; }
 
         public DirectoryScanner()
         {
-            _cancelTokenSource = new CancellationTokenSource();
         }
 
-        public FileTree Scan(string path, ushort maxThreadCount)
+        public FileTree Scan(string path, ushort maxThreadCount, Action<string> action)
         {
             if (File.Exists(path))
             {
@@ -30,39 +30,54 @@ namespace Core.Services
 
             if (maxThreadCount == 0)
             {
-                throw new ArgumentException($"Max thread count should be greater than 0");
+                throw new ArgumentException("Max thread count should be greater than 0");
             }
 
             IsScanning = true;
             _cancelTokenSource = new CancellationTokenSource();
-            _taskQueue = new TaskQueue(_cancelTokenSource, maxThreadCount);
-            var token = _cancelTokenSource.Token;
-            var directoryInfo = new DirectoryInfo(path);
-            var root = new Node(directoryInfo.FullName, directoryInfo.Name, true);
-            var rootTask = new Task(() => Start(root), token);
-            _taskQueue.Enqueue(rootTask);
-            _taskQueue.StartAndWaitAll();
-            IsScanning = false;
-            return new FileTree(root);
+            try {
+                var token = _cancelTokenSource.Token;
+                var directoryInfo = new DirectoryInfo(path);
+                var root = new Node(directoryInfo.FullName, directoryInfo.Name, true);
+                var rootTask = new Task(() => Start(root, token, action), token);
+                _taskQueue = new TaskQueue2(_cancelTokenSource, maxThreadCount);
+                _taskQueue.Enqueue(rootTask);
+                _taskQueue.StartAndWaitAll();
+                return new FileTree(root);
+            }
+            finally
+            {
+                IsScanning = false;
+                if (_cancelTokenSource != null)
+                {
+                    _cancelTokenSource.Dispose();
+                    _cancelTokenSource = null;
+                }
+            }
         }
 
         public void Stop()
         {
-            _cancelTokenSource.Cancel();
+            if (_cancelTokenSource != null)
+            {
+                _cancelTokenSource.Cancel();
+                _cancelTokenSource.Dispose();
+                _cancelTokenSource = null;
+            }
             IsScanning = false;
         }
 
-        private void Start(Node node)
+        private void Start(Node node, CancellationToken token, Action<string> onScanStart)
         {
             node.Children = new List<Node>();
             var directoryInfo = new DirectoryInfo(node.FullName);
-            var token = _cancelTokenSource.Token;
+            onScanStart(node.FullName);
 
             DirectoryInfo[]? directories;
             try
             {
                 directories = directoryInfo.GetDirectories().
-                    Where(info => info.LinkTarget == null).ToArray(); ;
+                    Where(info => info.LinkTarget == null).ToArray();
             }
             catch (Exception)
             {
@@ -78,9 +93,9 @@ namespace Core.Services
                         return;
                     }
 
-                    Node childNode = new Node(directory.FullName, directory.Name, true);
+                    Node childNode = new(directory.FullName, directory.Name, true);
                     node.Children.Add(childNode);
-                    Task task = new Task(() => Start(childNode), token);
+                    Task task = new(() => Start(childNode, token, onScanStart), token);
                     _taskQueue!.Enqueue(task);
                 }
             }
@@ -104,10 +119,11 @@ namespace Core.Services
                     {
                         return;
                     }
-                    Node childNode = new Node(file.FullName, file.Name, file.Length);
+                    Node childNode = new(file.FullName, file.Name, file.Length);
                     node.Children.Add(childNode);
                 }
             }
+            Thread.Sleep(100);
         }
     }
 }

@@ -6,6 +6,10 @@ using Core.Services;
 using Core.Interfaces;
 using WpfApp.Commands;
 using WpfApp.Models;
+using System;
+using System.Threading;
+using System.Diagnostics;
+using System.Windows.Threading;
 
 namespace WpfApp.ViewModel
 {
@@ -34,10 +38,17 @@ namespace WpfApp.ViewModel
             {
                 Task.Run(() =>
                 {
+                    System.Windows.Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal,
+                        new Action<string>((_) => Tree = null), null);
+                    var onScanStartAction = new Action<string>(currentDir => {
+                        System.Windows.Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal,
+                            new Action<string>((_) => CurrentDir = currentDir), null);
+                    });
+
                     IsScanning = true;
-                    Core.Models.FileTree result = _scanner.Scan(DirPath, MaxThreadCount);
-                    IsScanning = false;
+                    var result = _scanner.Scan(DirPath, MaxThreadCount, onScanStartAction);
                     Tree = new FileTree(result);
+                    IsScanning = false;
                 });
 
             }, _ => _DirPath != null && !IsScanning);
@@ -57,6 +68,17 @@ namespace WpfApp.ViewModel
             {
                 _DirPath = value;
                 OnPropertyChanged("DirPath");
+            }
+        }
+
+        private string? _currentDir = "";
+        public string? CurrentDir
+        {
+            get { return _currentDir; }
+            set
+            {
+                _currentDir = value;
+                OnPropertyChanged("CurrentDir");
             }
         }
 
@@ -91,7 +113,13 @@ namespace WpfApp.ViewModel
             {
                 _isScanning = value;
                 OnPropertyChanged("IsScanning");
+                OnPropertyChanged("IsNotScanning");
             }
+        }
+
+        public bool IsNotScanning
+        {
+            get { return !_isScanning; }
         }
 
         public void OnPropertyChanged([CallerMemberName] string prop = "")

@@ -25,7 +25,7 @@ namespace WpfApp.Models
                 {
                     double sizeInPercent = node.Size == 0 ? 0 : (double)child.Size / (double)node.Size * 100;
 
-                    Node newNode = new Node(child.Name, child.Size, sizeInPercent, child.IsDir);
+                    Node newNode = new(child.Name, child.Size, sizeInPercent, child.IsDir);
                     if (child.Children != null)
                     {
                         SetChilds(child, newNode);
