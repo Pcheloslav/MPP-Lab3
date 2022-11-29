@@ -84,18 +84,18 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Column="0" Background="#FF0000" Margin="0,0,0,515" Grid.ColumnSpan="3">
+        <StackPanel Grid.Column="0" Background="#FF0000" Margin="0,0,0,447" Grid.ColumnSpan="3">
             <Button Foreground="White" Margin ="10,10, 800,5" Command="{Binding ChooseDirCommand, Mode=OneWay}" Height="6" Width="236"
                     Content="Выбрать диреткорию" RenderTransformOrigin="0.497,0.538" IsEnabled="{Binding IsNotScanning}" />
             <Button Foreground="White" Margin ="0,-35, 0,5" Command="{Binding ScanCommand}" Content="Сканировать" Width="246" IsEnabled="{Binding IsNotScanning}" />
             <Button Foreground="White" Margin ="800,-35, 0,5" Command="{Binding StopCommand}" Content="Стоп" Width="257" IsEnabled="{Binding IsScanning}" />
             <TextBlock FontFamily="Arial" FontSize="20" Foreground="White" Text="Выбранная диктория: "/>
             <TextBlock Margin="30 0" FontFamily="Arial" FontSize="20" Foreground="White" TextWrapping="Wrap" Text="{Binding DirPath}"/>
-            <!--TextBlock Margin="30 0" FontFamily="Arial" FontSize="20" Foreground="White" Text="{Binding Tree.Root.Size, StringFormat=(\{0\} bytes)}"/-->
+            <TextBlock Margin="30 0" FontFamily="Arial" FontSize="20" Foreground="White" Text="{Binding Tree.Root.Size, StringFormat=(\{0\} bytes)}"/>
             <TextBlock Margin="30 0" FontFamily="Arial" FontSize="20" Foreground="White" Text="{Binding CurrentDir}"/>
         </StackPanel>
-        <ScrollViewer Grid.ColumnSpan="3" Margin="0, 125, 0, 0" Grid.RowSpan="2">
-            <TreeView ItemsSource="{Binding Tree.Root.Children}" Background="#c1a460" Height="586" Width="1108" RenderTransformOrigin="0.531,0.512">
+        <ScrollViewer Grid.ColumnSpan="3" Margin="0,163,0,0" Grid.RowSpan="2">
+            <TreeView ItemsSource="{Binding Tree.Root.Children}" Background="#c1a460" Height="638" Width="1070" RenderTransformOrigin="0.531,0.512">
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding Path=Children}">
                         <StackPanel Orientation="Horizontal" >

@@ -123,7 +123,7 @@ namespace Core.Services
                     node.Children.Add(childNode);
                 }
             }
-            Thread.Sleep(100);
+            Thread.Sleep(50);
         }
     }
 }
